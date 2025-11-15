@@ -16,6 +16,10 @@ type Repo interface {
 	SetUserActive(ctx context.Context, userID string, isActive bool) error
 }
 
+type PostgresRepo struct {
+	pool *pgxpool.Pool
+}
+
 func NewPostgresRepo(pool *pgxpool.Pool) *PostgresRepo {
 	return &PostgresRepo{pool: pool}
 }
