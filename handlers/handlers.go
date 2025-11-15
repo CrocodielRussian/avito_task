@@ -1,37 +1,59 @@
 package handlers
 
 import (
-	"context"
-	"prservice/repo"
-	"time"
+	"encoding/json"
+	"net/http"
+
+	"prservice/service"
 )
 
-type Service struct {
-	repo repo.Repo
+type Handler struct {
+	svc *service.Service
 }
 
-func NewService(r repo.Repo) *Service {
-	return &Service{repo: r}
+func NewHandler(s *service.Service) *Handler {
+	return &Handler{svc: s}
 }
 
-func (s *Service) AddTeam(ctx context.Context, teamName string, members []repo.User) error {
-	_ = members
-	return nil
+func (h *Handler) writeJSON(w http.ResponseWriter, code int, v interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	_ = json.NewEncoder(w).Encode(v)
 }
 
-func (s *Service) CreatePR(ctx context.Context, pr repo.PullRequest) (repo.PullRequest, error) {
-	return pr, nil
+func (h *Handler) Health(w http.ResponseWriter, r *http.Request) {
+	h.writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 }
 
-func (s *Service) MergePR(ctx context.Context, prID string) (repo.PullRequest, error) {
-	return repo.PullRequest{}, nil
+func (h *Handler) AddTeam(w http.ResponseWriter, r *http.Request) {
+	var req map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		h.writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid json"})
+		return
+	}
+	h.writeJSON(w, http.StatusCreated, map[string]string{"ok": "team add endpoint (skeleton)"})
 }
 
-func (s *Service) ReassignReviewer(ctx context.Context, prID string, oldUserID string) (string, error) {
-	return "", nil
+func (h *Handler) GetTeam(w http.ResponseWriter, r *http.Request) {
+	h.writeJSON(w, http.StatusOK, map[string]string{"note": "get team (skeleton)"})
 }
 
-func (s *Service) SetUserActive(ctx context.Context, userID string, isActive bool) error {
-	_ = time.Now()
-	return nil
+func (h *Handler) SetIsActive(w http.ResponseWriter, r *http.Request) {
+	h.writeJSON(w, http.StatusOK, map[string]string{"note": "set isActive (skeleton)"})
+}
+
+func (h *Handler) GetReviewsForUser(w http.ResponseWriter, r *http.Request) {
+	h.writeJSON(w, http.StatusOK, map[string]string{"note": "get reviews (skeleton)"})
+}
+
+func (h *Handler) CreatePR(w http.ResponseWriter, r *http.Request) {
+	h.writeJSON(w, http.StatusCreated, map[string]string{"note": "create pr (skeleton)"})
+}
+
+func (h *Handler) MergePR(w http.ResponseWriter, r *http.Request) {
+	h.writeJSON(w, http.StatusOK, map[string]string{"note": "merge pr (skeleton)"})
+}
+
+func (h *Handler) ReassignReviewer(w http.ResponseWriter, r *http.Request) {
+	h.writeJSON(w, http.StatusOK, map[string]string{"note": "reassign (skeleton)"})
 }
