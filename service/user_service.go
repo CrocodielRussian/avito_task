@@ -16,3 +16,6 @@ func NewUserService(repo *repo.UserRepository) *UserService {
 func (s *UserService) SetActive(ctx context.Context, userID string, isActive bool) error {
 	return s.repo.SetActive(ctx, userID, isActive)
 }
+func (s *UserService) GetReview(ctx context.Context, userID string) error {
+	return s.repo.GetReview(ctx, userID)
+}

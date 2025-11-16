@@ -15,7 +15,11 @@ type UserHandler struct {
 
 func RegisterUserRoutes(r *mux.Router, svc *service.UserService) {
 	h := &UserHandler{svc: svc}
-	r.HandleFunc("/users/setIsActive", h.SetActive).Methods("POST")
+
+	user := r.PathPrefix("/users").Subrouter()
+
+	user.HandleFunc("/setIsActive", h.SetActive).Methods("POST")
+	user.HandleFunc("/getReview", h.GetReview).Methods("GET")
 }
 
 type setActiveRequest struct {
@@ -32,5 +36,16 @@ func (h *UserHandler) SetActive(w http.ResponseWriter, r *http.Request) {
 
 	h.svc.SetActive(r.Context(), req.UserID, req.IsActive)
 
+	json.NewEncoder(w).Encode(map[string]any{"status": "ok"})
+}
+
+func (h *UserHandler) GetReview(w http.ResponseWriter, r *http.Request) {
+	var req setActiveRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	h.svc.GetReview(r.Context(), req.UserID, req.IsActive)
 	json.NewEncoder(w).Encode(map[string]any{"status": "ok"})
 }
