@@ -18,3 +18,7 @@ func NewTeamService(teamRepo *repo.TeamRepository, userRepo *repo.UserRepository
 func (s *TeamService) GetTeam(ctx context.Context, id string) (*types.Team, error) {
 	return s.teamRepo.GetByID(ctx, id)
 }
+
+func (s *TeamService) AddTeam(ctx context.Context, id string) (*types.Team, error) {
+	return s.teamRepo.GetByID(ctx, id)
+}
