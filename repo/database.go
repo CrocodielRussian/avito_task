@@ -7,13 +7,13 @@ import (
 )
 
 type Repo interface {
-	CreateTeam(ctx context.Context, team Team) error
-	GetTeam(ctx context.Context, teamName string) (Team, error)
-	CreatePR(ctx context.Context, pr PullRequest) error
-	GetPR(ctx context.Context, prID string) (PullRequest, error)
-	MergePR(ctx context.Context, prID string) error
-	ReassignReviewer(ctx context.Context, prID string, oldUserID string) (string, error)
-	SetUserActive(ctx context.Context, userID string, isActive bool) error
+	addTeam(ctx context.Context, team Team) error
+	getTeam(ctx context.Context, teamName string) (Team, error)
+	addPR(ctx context.Context, pr PullRequest) error
+	getPR(ctx context.Context, prID string) (PullRequest, error)
+	mergePR(ctx context.Context, prID string) error
+	reassignReviewer(ctx context.Context, prID string, oldUserID string) (string, error)
+	setUserActive(ctx context.Context, userID string, isActive bool) error
 }
 
 type PostgresRepo struct {
@@ -57,30 +57,53 @@ type PullRequestShort struct {
 	Status          string `json:"status"`
 }
 
-func (r *PostgresRepo) CreateTeam(ctx context.Context, team Team) error {
+func (r *PostgresRepo) addTeam(ctx context.Context, team Team) error {
+	tx, err := r.pool.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback(ctx)
+		} else {
+			tx.Commit(ctx)
+		}
+	}()
+
+	tx.Exec(ctx, "insert into users (email) values ($1)", "c@em.com")
+	if err != nil {
+		return err
+	}
+
+	var id int
+	row := tx.QueryRow(ctx, "select id from users where email = $1", "c@em.com")
+	if err := row.Scan(&id); err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func (r *PostgresRepo) GetTeam(ctx context.Context, teamName string) (Team, error) {
+func (r *PostgresRepo) getTeam(ctx context.Context, teamName string) (Team, error) {
 	return Team{}, nil
 }
 
-func (r *PostgresRepo) CreatePR(ctx context.Context, pr PullRequest) error {
+func (r *PostgresRepo) addPR(ctx context.Context, pr PullRequest) error {
 	return nil
 }
 
-func (r *PostgresRepo) GetPR(ctx context.Context, prID string) (PullRequest, error) {
+func (r *PostgresRepo) getPR(ctx context.Context, prID string) (PullRequest, error) {
 	return PullRequest{}, nil
 }
 
-func (r *PostgresRepo) MergePR(ctx context.Context, prID string) error {
+func (r *PostgresRepo) mergePR(ctx context.Context, prID string) error {
 	return nil
 }
 
-func (r *PostgresRepo) ReassignReviewer(ctx context.Context, prID string, oldUserID string) (string, error) {
+func (r *PostgresRepo) reassignReviewer(ctx context.Context, prID string, oldUserID string) (string, error) {
 	return "", nil
 }
 
-func (r *PostgresRepo) SetUserActive(ctx context.Context, userID string, isActive bool) error {
+func (r *PostgresRepo) setUserActive(ctx context.Context, userID string, isActive bool) error {
 	return nil
 }

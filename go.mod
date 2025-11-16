@@ -6,8 +6,6 @@ require github.com/jackc/pgx/v5 v5.7.6
 
 require (
 	github.com/gorilla/mux v1.8.1
-// github.com/jackc/pgx/v5/pgxpool v5.5.1
-// github.com/jackc/pgx/v5/stdlib v5.5.1
 )
 
 require (

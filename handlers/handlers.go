@@ -46,7 +46,7 @@ func (h *Handler) GetReviewsForUser(w http.ResponseWriter, r *http.Request) {
 	h.writeJSON(w, http.StatusOK, map[string]string{"note": "get reviews (skeleton)"})
 }
 
-func (h *Handler) CreatePR(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) AddPR(w http.ResponseWriter, r *http.Request) {
 	h.writeJSON(w, http.StatusCreated, map[string]string{"note": "create pr (skeleton)"})
 }
 
