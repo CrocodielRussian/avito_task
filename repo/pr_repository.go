@@ -17,8 +17,8 @@ func NewPRRepository(db *pgxpool.Pool) *PRRepository {
 
 func (r *PRRepository) Create(ctx context.Context, pr *types.PullRequest) error {
 	_, err := r.db.Exec(ctx,
-		"INSERT INTO pull_requests (id, author_id, reviewer_id, team_id, status) VALUES ($1,$2,$3,$4,$5)",
-		pr.ID, pr.AuthorID, pr.ReviewerID, pr.TeamID, pr.Status,
+		"INSERT INTO pull_requests (pull_request_id, pull_request_name, author_id, status, assigned_reviewers) VALUES ($1,$2,$3,$4,$5)",
+		pr.ID, pr.PullRequestName, pr.AuthorID, pr.Status, pr.AssignedReviewers,
 	)
 	return err
 }
