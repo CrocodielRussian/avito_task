@@ -46,6 +46,6 @@ func (h *UserHandler) GetReview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.svc.GetReview(r.Context(), req.UserID, req.IsActive)
+	h.svc.GetReview(r.Context(), req.UserID)
 	json.NewEncoder(w).Encode(map[string]any{"status": "ok"})
 }
